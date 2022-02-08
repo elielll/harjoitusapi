@@ -153,6 +153,36 @@ paths:
                   dateOfBirth: '1996-08-24'
         description: Post the necessary fields for the API to create a new user.
       description: Create a new user.
+    get:
+      summary: ''
+      operationId: get-user
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              example-1:
+                value:
+                  id: 142
+                  firstName: Alice
+                  lastName: Smith
+                  email: alice.smith@gmail.com
+                  dateOfBirth: '1997-10-31'
+                  emailVerified: true
+                  signUpDate: '2019-08-24'
   /items:
     parameters: []
     post:
@@ -165,6 +195,26 @@ paths:
           description: Bad Request
         '401':
           description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+    get:
+      summary: ''
+      operationId: get-items
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
       requestBody:
         content:
           application/json:
@@ -261,6 +311,42 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Item'
+  /login:
+    post:
+      summary: ''
+      operationId: post-login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-1:
+                  value: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login'
+          text/html:
+            schema:
+              $ref: '#/components/schemas/login'
+            examples: {}
+      security:
+        - API Key - 1: []
+        - API Key - 2: []
+      parameters: []
 components:
   schemas:
     User:
@@ -317,8 +403,6 @@ components:
           type: string
         Location:
           type: string
-        Images:
-          type: string
         Asking price:
           type: number
         Date of posting:
@@ -328,13 +412,37 @@ components:
           type: string
         Contact information:
           type: string
+        iamage1:
+          type: string
+        image2:
+          type: string
+        image3:
+          type: string
+        imaga4:
+          type: string
       required:
         - Title
         - Description
         - Category
         - Location
-        - Images
         - Asking price
         - Date of posting
         - Delivery type
         - Contact information
+    login:
+      title: login
+      type: object
+      properties:
+        userName:
+          type: string
+        userPassword:
+          type: string
+        token:
+          type: string
+  securitySchemes:
+    API Key - 1:
+      type: http
+      scheme: bearer
+    API Key - 2:
+      type: http
+      scheme: basic
