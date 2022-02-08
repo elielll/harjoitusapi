@@ -153,17 +153,71 @@ paths:
                   dateOfBirth: '1996-08-24'
         description: Post the necessary fields for the API to create a new user.
       description: Create a new user.
-  /sell:
+  /items:
+    parameters: []
     post:
-      summary: Create new item to sell
-      operationId: post-sell
+      summary: ''
+      operationId: post-items
       responses:
         '201':
           description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+  '/item/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Item'
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
+      operationId: get-item-id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Item'
+    put:
+      summary: ''
+      operationId: put-item-id
+      responses:
+        '200':
+          description: OK
+        '304':
+          description: Not Modified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
         '400':
           description: Bad Request
           content:
@@ -178,16 +232,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Item'
-            examples: {}
-        description: Post needed info to create new item
-    put:
-      summary: Modify post
-      operationId: put-sell
+    delete:
+      summary: ''
+      operationId: delete-item-id
       responses:
-        '202':
-          description: Accepted
-        '304':
-          description: Not Modified
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorDescription:
+                    type: string
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
@@ -200,53 +261,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Item'
-        description: ''
-    delete:
-      summary: Delete post
-      operationId: delete-sell
-      responses:
-        '200':
-          description: OK
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Item'
-  /items:
-    get:
-      summary: Find item using params
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Item'
-      operationId: get-items
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties: {}
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: category
-          description: find item by category
-        - schema:
-            type: string
-          in: query
-          name: location
-          description: find item by location
-        - schema:
-            type: string
-          in: query
-          name: posting date
-          description: find item by date
-    parameters: []
 components:
   schemas:
     User:
@@ -306,7 +320,7 @@ components:
         Images:
           type: string
         Asking price:
-          type: string
+          type: number
         Date of posting:
           type: string
           format: date
