@@ -1,15 +1,126 @@
 const { v4: uuidv4 } = require('uuid');
-const bodyParser = require('body-parser');
+const passport = require('passport')
+const BasicStrategy = require('passport-http').BasicStrategy
 const express = require('express');
 const bodyParser = require('body-parser');
-const { Router } = require('express');
+const bcrypt = require('bcryptjs');
+//const { Router } = require('express');
 const app = express()
 const port = 3000
-const items = require('./routes/items')
+//const items = require('./routes/items');
+const { session } = require('passport');
+//const jwt = require('jsonwebtoken');
 
 app.use(bodyParser.json());
-app.use('/items'.items)
+//app.use('/items', items)
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`)
 })
+
+//tarkistetaan onko käyttäjän antamat tiedot oikein
+passport.use(new BasicStrategy(
+    function (username, password, done){
+
+        console.log(username+" "+ password);
+        let user = users.find(user => (user.username === username) &&  (bcrypt.compareSync(password,user.password)));
+        if(user!=undefined){
+          done(null, {});
+        }
+        else{
+          done(null, false);
+        }
+    }
+));
+
+
+const users = [];
+
+//luodaan käyttäjä
+app.post('/users', (req, res) => {
+    console.log("Post user");
+    const salt = bcrypt.genSaltSync(6);
+    console.log('salt:' + salt)
+    const hashedPassword=bcrypt.hashSync(req.body.password, salt);
+
+
+    const user = {
+        id: uuidv4(), 
+        username: req.body.username,
+        password: hashedPassword,
+        email:req.body.email
+    }
+    users.push(user);
+    res.sendStatus(201);
+})
+  // kirjautuminen, jotta päästään tulostaan consoliin, pitää käydä passport midlewaren kautta
+  app.post('/login', passport.authenticate('basic', {session: false}),(req,res) =>{
+    console.log("suojattu reitti");
+    res.json({status: "ok toimii"});
+  } )
+
+
+//tässä mitä oli items.js sisällä. Piti ottaa pois ku ei toiminu  
+/*
+var express = require('express')
+const router = express.Router()
+const { v4: uuidv4 } = require('uuid');
+
+// middleware that is specific to this router
+router.use(function timeLog (req, res, next) {
+  console.log('Time: ', Date.now())
+  next()
+})
+
+router.get('/:id', (req, res) =>{
+    let foundIndex = -1;
+    for(let i = 0; i < items.lenghtM; i++){
+        if(items[i].id === req.params.todoId){
+            foundIndex = i;
+            break;
+        }
+    }
+
+    if(foundIndex === -1){
+        res.sendStatus(404);
+        return;
+    }else{
+        res.json(items[foundIndex]);
+    }
+})
+
+router.post('/:id', (res, req) => {
+    console.log(req.body);
+    items.push({
+        id: uuidv4(), 
+        description: req.body.description,
+        duedate: req.body.duedate,
+        isDone: req.body.isDone
+    });
+    res.sendStatus(201);
+})
+
+router.delete('/:id', (req, res) => {
+        let foundIndex = items.findIndex(t => t.id === res.params.todoId);
+    
+    if(foundIndex === -1){
+        res.sendStatus(404);
+        return;
+    }else{
+        items.splice(foundIndex, 1);
+        res.sendStatus(200);
+    }
+})
+
+router.put('/:id', (req, res) => {
+    let foundTodo = items.find(t => t.id === res.params.todoId);
+    if(foundTodo){
+        foundTodo.description = req.body.description;
+        foundTodo.duedate = req.body.duedate;
+        foundTodo.isDone = req.body.isDone;
+        res.sendStatus(200);
+    }
+})
+module.exports = router
+
+*/
