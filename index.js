@@ -35,6 +35,7 @@ passport.use(new BasicStrategy(
 
 
 const users = [];
+const items = [];
 
 //luodaan käyttäjä
 app.post('/users', (req, res) => {
@@ -58,6 +59,17 @@ app.post('/users', (req, res) => {
     console.log("suojattu reitti");
     res.json({status: "ok toimii"});
   } )
+
+
+  app.post('/items', (res, req) => {
+    console.log(req.body);
+    const item={
+        id: uuidv4(),
+        Tittle: req.body.Tittle
+    };
+    item.push(items);
+    res.sendStatus(201);
+})
 
 
 //tässä mitä oli items.js sisällä. Piti ottaa pois ku ei toiminu  
