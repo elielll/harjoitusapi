@@ -91,8 +91,26 @@ app.get('/item', (req, res) => {
     res.json(items);
 })
 
-app.put('/item:id', (req, res) => {
-    let foundItem = items.find(t => t.id === res.params.id);
+//hakee tietyn tavaran
+app.get('/item/:itemid', (req, res) => {
+    let foundIndex = -1;
+   for(let i = 0; i < items.length; i++) {
+       if(items[i].id === req.params.itemid) {
+           foundIndex = i;
+           break;
+       }
+   }
+
+    if(foundIndex === -1) {
+        res.sendStatus(404);
+    } else {
+        res.json(items[foundIndex]);
+    }
+})
+
+app.put('/items/:itemid', (req, res) => {
+    let foundItem = items.find(t => t.id === req.params.itemid);
+
     if(foundItem){
         foundItem.Tittle = req.body.Tittle;
         foundItem.Description = req.body.Description;
@@ -101,14 +119,28 @@ app.put('/item:id', (req, res) => {
         foundItem.AskingPrice = req.body.AskingPrice;
         foundItem.DateOfPosting = req.body.DateOfPosting;
         foundItem.DeliveryType = req.body.DeliveryType;
-        foundItem.ContactInformation = req.bod.ContactInformation;
+        foundItem.ContactInformation = req.body.ContactInformation;
         foundItem.image1 = req.body.image1;
         foundItem.image2 = req.body.image2;
         foundItem.image3 = req.body.image3;
         foundItem.image4 = req.body.image4;
 
         res.sendStatus(200);
+    } else {
+        res.sendStatus(404);
     }
+})
+
+app.delete('/items/:itemsid', (req, res) => {
+    let foundIndex = items.findIndex(t => t.id === req.params.itemsid);
+     
+    if(foundIndex === -1) {
+             res.sendStatus(404);
+    } else {
+             items.splice(foundIndex, 1);
+             res.sendStatus(202);
+    }
+
 })
 //tässä mitä oli items.js sisällä. Piti ottaa pois ku ei toiminu  
 /*
