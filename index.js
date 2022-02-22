@@ -13,15 +13,7 @@ const { session } = require('passport');
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
-app.post('/upload', upload.single('image'), function (req, res, next) {
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
-  console.log('req.file');
-  console.log(req.file);
-  console.log('req.body');
-  console.log(req.body);
-  res.sendStatus(200);
-})
+
 
 
 app.use(bodyParser.json());
@@ -48,6 +40,27 @@ passport.use(new BasicStrategy(
 
 
 
+app.post('/items/:itemid', upload.single('image'), function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+    let foundItem = items.find(t => t.id === req.params.itemid);
+    console.log('req.file');
+    console.log(req.file);
+      
+        if (foundItem.image1 == ""){
+            foundItem.image1 = req.file;
+        } else if(foundItem.image2 == ""){
+            foundItem.image2 = req.file;
+        } else if(foundItem.image3 == ""){
+            foundItem.image3 = req.file;
+        } else if (foundItem.image4 == ""){
+            foundItem.image4 = req.file;
+        } else {
+            res.sendStatus(400);
+        }
+        
+        res.sendStatus(200);
+})
 
 const users = [];
 //luodaan käyttäjä
