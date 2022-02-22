@@ -10,6 +10,19 @@ const port = 3000
 //const items = require('./routes/items');
 const { session } = require('passport');
 //const jwt = require('jsonwebtoken');
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+
+app.post('/upload', upload.single('image'), function (req, res, next) {
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+  console.log('req.file');
+  console.log(req.file);
+  console.log('req.body');
+  console.log(req.body);
+  res.sendStatus(200);
+})
+
 
 app.use(bodyParser.json());
 //app.use('/items', items)
@@ -63,7 +76,7 @@ app.post('/login', passport.authenticate('basic', {session: false}),(req,res) =>
  
 
 const items = [];
-//luodaan uusi tavara
+//luodaan uusi ilmoitus
 app.post('/items', (req, res) => {
     
     const item = {
