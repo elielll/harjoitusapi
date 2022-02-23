@@ -117,7 +117,37 @@ app.get('/item', (req, res) => {
     res.json(items);
 })
 
-//hakee tietyn tavaran
+
+
+//Tän pitäs pystyä hakemaan categorian perusteella items taulukosta ilmoituksia
+app.get('/item/testi', (req, res) => {
+
+    //res.send(req.query.Category);
+    
+    let foundIndex = -1;
+    for(let i = 0; i < items.length; i++) {
+        if (items[i].Category === req.query.Category) {
+            foundIndex = i;
+            
+        }
+        else if(items[i].Location === req.query.Location){
+            foundIndex = i;
+        
+        }
+        else if(items[i].DateOfPosting === req.query.DateOfPosting){
+            foundIndex = i;
+        
+        }
+    }
+    if(foundIndex === -1) {
+        res.sendStatus(404);
+    } else {
+        res.json(items[foundIndex]);
+    }
+    
+});
+
+//hakee tavaran id:n perusteella 
 app.get('/item/:itemid', (req, res) => {
     let foundIndex = -1;
    for(let i = 0; i < items.length; i++) {
