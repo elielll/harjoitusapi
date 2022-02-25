@@ -40,7 +40,7 @@ passport.use(new BasicStrategy(
 
 
 
-app.post('/items/:itemid', upload.single('image'), function (req, res, next) {
+app.post('/items/:itemid', upload.single('image'),passport.authenticate('basic', {session: false}), function (req, res, next) {
     // req.file is the `avatar` file
     // req.body will hold the text fields, if there were any
     let foundItem = items.find(t => t.id === req.params.itemid);
@@ -65,9 +65,8 @@ app.post('/items/:itemid', upload.single('image'), function (req, res, next) {
 const users = [];
 //luodaan käyttäjä
 app.post('/users', (req, res) => {
-    console.log("Post user");
+    console.log("Created new user");
     const salt = bcrypt.genSaltSync(6);
-    console.log('salt:' + salt)
     const hashedPassword=bcrypt.hashSync(req.body.password, salt);
 
 
@@ -90,7 +89,7 @@ app.post('/login', passport.authenticate('basic', {session: false}),(req,res) =>
 
 const items = [];
 //luodaan uusi ilmoitus
-app.post('/items', (req, res) => {
+app.post('/items', passport.authenticate('basic', {session: false}),(req, res) => {
     
     const item = {
         id: uuidv4(),
@@ -130,6 +129,7 @@ app.get('/item/testi', (req, res) => {
             foundIndex = i;
             
         }
+        
         else if(items[i].Location === req.query.Location){
             foundIndex = i;
         
@@ -138,12 +138,14 @@ app.get('/item/testi', (req, res) => {
             foundIndex = i;
         
         }
+        
     }
     if(foundIndex === -1) {
         res.sendStatus(404);
-    } else {
+    }else {
         res.json(items[foundIndex]);
     }
+    
     
 });
 
@@ -164,7 +166,7 @@ app.get('/item/:itemid', (req, res) => {
     }
 })
 
-app.put('/items/:itemid', (req, res) => {
+app.put('/items/:itemid', passport.authenticate('basic', {session: false}), (req, res) => {
     let foundItem = items.find(t => t.id === req.params.itemid);
 
     if(foundItem){
@@ -187,7 +189,7 @@ app.put('/items/:itemid', (req, res) => {
     }
 })
 
-app.delete('/items/:itemsid', (req, res) => {
+app.delete('/items/:itemsid', passport.authenticate('basic', {session: false}), (req, res) => {
     let foundIndex = items.findIndex(t => t.id === req.params.itemsid);
      
     if(foundIndex === -1) {
