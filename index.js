@@ -19,7 +19,9 @@ const upload = multer({ dest: 'uploads/' })
 app.use(bodyParser.json());
 //app.use('/items', items)
 
-app.listen(port, () => {
+app.set('port', (process.env.PORT || 80));
+
+app.listen(app.get('port'), function()  {
   console.log(`Example app listening on port ${port}`)
 })
 
