@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 //const { Router } = require('express');
 const app = express()
-//const port = 3000
+const PORT = process.env.PORT || 80;
 //const items = require('./routes/items');
 const { session } = require('passport');
 //const jwt = require('jsonwebtoken');
@@ -19,10 +19,10 @@ const upload = multer({ dest: 'uploads/' })
 app.use(bodyParser.json());
 //app.use('/items', items)
 
-app.set('port', (process.env.PORT || 80));
+//app.set('PORT', (process.env.PORT || 80));
 
-app.listen(app.get('port'), function()  {
-  console.log(`Example app listening on port ${port}`)
+app.listen(app.get('PORT'), function()  {
+  console.log(`Example app listening on port ${PORT}`)
 })
 
 //tarkistetaan onko käyttäjän antamat tiedot oikein
